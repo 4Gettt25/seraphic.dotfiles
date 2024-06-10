@@ -1,0 +1,92 @@
+#!/bin/bash
+
+# Update system and install basic dependencies
+sudo pacman -Syu --noconfirm
+sudo pacman -S --noconfirm git base-devel wget
+
+# Install yay for AUR packages
+if ! command -v yay &> /dev/null; then
+    git clone https://aur.archlinux.org/yay.git
+    cd yay
+    makepkg -si --noconfirm
+    cd ..
+    rm -rf yay
+fi
+
+# Install Hyprland and dependencies
+yay -S --noconfirm hyprland
+
+# Install GTK theme: Modified Adw Theme
+yay -S --noconfirm adw-gtk3-git
+
+# Install Everblush color scheme
+git clone https://github.com/Everblush/everblush-gtk ~/.themes/Everblush
+
+# Install fonts
+yay -S --noconfirm nerd-fonts-iosevka nerd-fonts-jetbrains-mono ttf-san-francisco ttf-ibm-plex
+
+# Install cursor theme: Bibata Modern Ice
+yay -S --noconfirm bibata-cursor-theme
+gsettings set org.gnome.desktop.interface cursor-theme "Bibata-Modern-Ice"
+
+# Install icon theme: Hatter Icon Theme
+yay -S --noconfirm hatter-icon-theme
+
+# Install and configure Rofi with themes from Adi1090x
+yay -S --noconfirm rofi
+git clone https://github.com/adi1090x/rofi.git ~/.config/rofi
+# Modify themes as needed in ~/.config/rofi
+
+# Install Firefox and apply GNOME theme and Tabliss
+yay -S --noconfirm firefox
+git clone https://github.com/rafaelmardojai/firefox-gnome-theme ~/.mozilla/firefox/firefox-gnome-theme
+# Follow installation steps from the repository
+
+# Install Waybar
+yay -S --noconfirm waybar
+
+# Install SwayNC
+yay -S --noconfirm swaync
+
+# Install and configure Spotify with Spicetify and Beautiful Lyrics Extension
+yay -S --noconfirm spotify spicetify-cli
+spicetify backup apply enable-devtools
+spicetify config current_theme CustomTheme color_scheme base
+spicetify apply
+# Install Beautiful Lyrics Extension following spicetify instructions
+
+# Install Hyprlock
+yay -S --noconfirm hyprlock
+
+# Install and configure SDDM with custom Boo Theme
+yay -S --noconfirm sddm sddm-theme-boo
+
+# Install Obsidian and VSCode with Everblush theme
+yay -S --noconfirm obsidian code
+# Install Everblush theme from respective stores in Obsidian and VSCode
+
+# Install CatNap
+yay -S --noconfirm catnap
+
+# Install Hypridle
+yay -S --noconfirm hypridle
+
+# Install Alacritty
+yay -S --noconfirm alacritty
+
+# Install Wallpaper Daemon: Swww
+yay -S --noconfirm swww
+# OR MPVPaper
+# yay -S --noconfirm mpvpaper
+
+# Install Cava
+yay -S --noconfirm cava
+
+# Copy dotfiles to ~/.config
+cp -r dotfiles/* ~/.config/
+
+# Copy wallpapers to ~/.config/swww
+mkdir -p ~/.config/swww
+cp -r Wallpapers/* ~/.config/swww/
+
+echo "Installation and configuration complete. Please reboot your system."
