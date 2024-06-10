@@ -1,92 +1,161 @@
 #!/bin/bash
 
+# Colors for output
+GREEN="\033[1;32m"
+CYAN="\033[1;36m"
+RED="\033[1;31m"
+RESET="\033[0m"
+
+# Function to print messages
+print_message() {
+    echo -e "${CYAN}[$(date +"%T")] $1${RESET}"
+}
+
+print_success() {
+    echo -e "${GREEN}[$(date +"%T")] $1${RESET}"
+}
+
+print_error() {
+    echo -e "${RED}[$(date +"%T")] $1${RESET}"
+}
+
+print_message "Starting the installation script..."
+
 # Update system and install basic dependencies
+print_message "Updating system and installing basic dependencies..."
 sudo pacman -Syu --noconfirm
-sudo pacman -S --noconfirm git base-devel wget
+sudo pacman -S --noconfirm git base-devel wget || { print_error "Failed to install basic dependencies"; exit 1; }
+print_success "System updated and basic dependencies installed."
 
 # Install yay for AUR packages
 if ! command -v yay &> /dev/null; then
+    print_message "Installing yay..."
     git clone https://aur.archlinux.org/yay.git
     cd yay
-    makepkg -si --noconfirm
+    makepkg -si --noconfirm || { print_error "Failed to install yay"; exit 1; }
     cd ..
     rm -rf yay
+    print_success "yay installed."
+else
+    print_success "yay is already installed."
 fi
 
 # Install Hyprland and dependencies
-yay -S --noconfirm hyprland
+print_message "Installing Hyprland and dependencies..."
+yay -S --noconfirm hyprland || { print_error "Failed to install Hyprland"; exit 1; }
+print_success "Hyprland installed."
 
 # Install GTK theme: Modified Adw Theme
-yay -S --noconfirm adw-gtk3-git
+print_message "Installing GTK theme: Modified Adw Theme..."
+yay -S --noconfirm adw-gtk3-git || { print_error "Failed to install GTK theme"; exit 1; }
+print_success "GTK theme installed."
 
 # Install Everblush color scheme
-git clone https://github.com/Everblush/everblush-gtk ~/.themes/Everblush
+print_message "Installing Everblush color scheme..."
+git clone https://github.com/Everblush/everblush-gtk ~/.themes/Everblush || { print_error "Failed to install Everblush color scheme"; exit 1; }
+print_success "Everblush color scheme installed."
 
 # Install fonts
-yay -S --noconfirm nerd-fonts-iosevka nerd-fonts-jetbrains-mono ttf-san-francisco ttf-ibm-plex
+print_message "Installing fonts..."
+yay -S --noconfirm nerd-fonts-iosevka nerd-fonts-jetbrains-mono ttf-san-francisco ttf-ibm-plex || { print_error "Failed to install fonts"; exit 1; }
+print_success "Fonts installed."
 
 # Install cursor theme: Bibata Modern Ice
-yay -S --noconfirm bibata-cursor-theme
+print_message "Installing cursor theme: Bibata Modern Ice..."
+yay -S --noconfirm bibata-cursor-theme || { print_error "Failed to install cursor theme"; exit 1; }
 gsettings set org.gnome.desktop.interface cursor-theme "Bibata-Modern-Ice"
+print_success "Cursor theme installed."
 
 # Install icon theme: Hatter Icon Theme
-yay -S --noconfirm hatter-icon-theme
+print_message "Installing icon theme: Hatter Icon Theme..."
+yay -S --noconfirm hatter-icon-theme || { print_error "Failed to install icon theme"; exit 1; }
+print_success "Icon theme installed."
 
 # Install and configure Rofi with themes from Adi1090x
-yay -S --noconfirm rofi
-git clone https://github.com/adi1090x/rofi.git ~/.config/rofi
+print_message "Installing and configuring Rofi..."
+yay -S --noconfirm rofi || { print_error "Failed to install Rofi"; exit 1; }
+git clone https://github.com/adi1090x/rofi.git ~/.config/rofi || { print_error "Failed to clone Rofi themes"; exit 1; }
 # Modify themes as needed in ~/.config/rofi
+print_success "Rofi installed and configured."
 
 # Install Firefox and apply GNOME theme and Tabliss
-yay -S --noconfirm firefox
-git clone https://github.com/rafaelmardojai/firefox-gnome-theme ~/.mozilla/firefox/firefox-gnome-theme
+print_message "Installing Firefox and applying GNOME theme and Tabliss..."
+yay -S --noconfirm firefox || { print_error "Failed to install Firefox"; exit 1; }
+git clone https://github.com/rafaelmardojai/firefox-gnome-theme ~/.mozilla/firefox/firefox-gnome-theme || { print_error "Failed to clone Firefox GNOME theme"; exit 1; }
 # Follow installation steps from the repository
+print_success "Firefox installed and themed."
 
 # Install Waybar
-yay -S --noconfirm waybar
+print_message "Installing Waybar..."
+yay -S --noconfirm waybar || { print_error "Failed to install Waybar"; exit 1; }
+print_success "Waybar installed."
 
 # Install SwayNC
-yay -S --noconfirm swaync
+print_message "Installing SwayNC..."
+yay -S --noconfirm swaync || { print_error "Failed to install SwayNC"; exit 1; }
+print_success "SwayNC installed."
 
 # Install and configure Spotify with Spicetify and Beautiful Lyrics Extension
-yay -S --noconfirm spotify spicetify-cli
+print_message "Installing and configuring Spotify..."
+yay -S --noconfirm spotify spicetify-cli || { print_error "Failed to install Spotify and Spicetify"; exit 1; }
 spicetify backup apply enable-devtools
 spicetify config current_theme CustomTheme color_scheme base
 spicetify apply
 # Install Beautiful Lyrics Extension following spicetify instructions
+print_success "Spotify installed and themed."
 
 # Install Hyprlock
-yay -S --noconfirm hyprlock
+print_message "Installing Hyprlock..."
+yay -S --noconfirm hyprlock || { print_error "Failed to install Hyprlock"; exit 1; }
+print_success "Hyprlock installed."
 
 # Install and configure SDDM with custom Boo Theme
-yay -S --noconfirm sddm sddm-theme-boo
+print_message "Installing and configuring SDDM..."
+yay -S --noconfirm sddm sddm-theme-boo || { print_error "Failed to install SDDM and Boo theme"; exit 1; }
+print_success "SDDM installed and configured."
 
 # Install Obsidian and VSCode with Everblush theme
-yay -S --noconfirm obsidian code
+print_message "Installing Obsidian and VSCode..."
+yay -S --noconfirm obsidian code || { print_error "Failed to install Obsidian and VSCode"; exit 1; }
 # Install Everblush theme from respective stores in Obsidian and VSCode
+print_success "Obsidian and VSCode installed."
 
 # Install CatNap
-yay -S --noconfirm catnap
+print_message "Installing CatNap..."
+yay -S --noconfirm catnap || { print_error "Failed to install CatNap"; exit 1; }
+print_success "CatNap installed."
 
 # Install Hypridle
-yay -S --noconfirm hypridle
+print_message "Installing Hypridle..."
+yay -S --noconfirm hypridle || { print_error "Failed to install Hypridle"; exit 1; }
+print_success "Hypridle installed."
 
 # Install Alacritty
-yay -S --noconfirm alacritty
+print_message "Installing Alacritty..."
+yay -S --noconfirm alacritty || { print_error "Failed to install Alacritty"; exit 1; }
+print_success "Alacritty installed."
 
 # Install Wallpaper Daemon: Swww
-yay -S --noconfirm swww
+print_message "Installing Wallpaper Daemon: Swww..."
+yay -S --noconfirm swww || { print_error "Failed to install Swww"; exit 1; }
 # OR MPVPaper
 # yay -S --noconfirm mpvpaper
+print_success "Wallpaper Daemon installed."
 
 # Install Cava
-yay -S --noconfirm cava
+print_message "Installing Cava..."
+yay -S --noconfirm cava || { print_error "Failed to install Cava"; exit 1; }
+print_success "Cava installed."
 
 # Copy dotfiles to ~/.config
-cp -r dotfiles/* ~/.config/
+print_message "Copying dotfiles to ~/.config..."
+cp -r dotfiles/* ~/.config/ || { print_error "Failed to copy dotfiles"; exit 1; }
+print_success "Dotfiles copied to ~/.config."
 
 # Copy wallpapers to ~/.config/swww
+print_message "Copying wallpapers to ~/.config/swww..."
 mkdir -p ~/.config/swww
-cp -r Wallpapers/* ~/.config/swww/
+cp -r Wallpapers/* ~/.config/swww/ || { print_error "Failed to copy wallpapers"; exit 1; }
+print_success "Wallpapers copied to ~/.config/swww."
 
-echo "Installation and configuration complete. Please reboot your system."
+print_message "Installation and configuration complete. Please reboot your system."
